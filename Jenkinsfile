@@ -15,11 +15,10 @@ pipeline {
     stages {
         stage('Clone GitHub Repo') {
             steps {
-                // IMPORTANT: Replace yashwanth407 with your actual GitHub username
-                // Example: https://github.com/johndoe/Pipelining_pythonApp.git
+                // Repository URL for yashwanth407
                 git branch: 'main', 
                     credentialsId: 'github-https', 
-                    url: 'https://github.com/yashwanth407/Pipelining_pythonApp.git'
+                    url: 'https://github.com/yashwanth407/ci-cd.git'
             }
         }
 
