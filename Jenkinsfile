@@ -3,12 +3,23 @@ pipeline {
 
     environment {
         VENV = "venv"
+        PYTHON_VERSION = "python3"
+        JENKINS_ADMIN = "true"
+    }
+
+    options {
+        timeout(time: 10, unit: 'MINUTES')
+        retry(2)
     }
 
     stages {
         stage('Clone GitHub Repo') {
             steps {
-                git branch: 'main', credentialsId: 'github-https', url: 'https://github.com/your-username/Pipelining_pythonApp.git'
+                // IMPORTANT: Replace YOUR_USERNAME with your actual GitHub username
+                // Example: https://github.com/johndoe/Pipelining_pythonApp.git
+                git branch: 'main', 
+                    credentialsId: 'github-https', 
+                    url: 'https://github.com/YOUR_USERNAME/Pipelining_pythonApp.git'
             }
         }
 
@@ -20,10 +31,47 @@ pipeline {
             }
         }
 
+        stage('Test Application') {
+            steps {
+                sh '''
+                    # Test if the app can be imported
+                    ./venv/bin/python -c "import app; print('App import successful')"
+                    
+                    # Test if model can be loaded
+                    ./venv/bin/python -c "from model import train_model; model = train_model(); print('Model loaded successfully')"
+                '''
+            }
+        }
+
         stage('Run Flask App') {
             steps {
-                sh './venv/bin/python app.py'
+                script {
+                    // Start the Flask app in background
+                    sh './venv/bin/python app.py &'
+                    
+                    // Wait a moment for the app to start
+                    sleep 5
+                    
+                    // Test if the app is responding
+                    sh 'curl -f http://localhost:5001 || exit 1'
+                    
+                    echo "Flask application is running successfully on port 5001"
+                }
             }
+        }
+    }
+
+    post {
+        always {
+            // Clean up background processes
+            sh 'pkill -f "python.*app.py" || true'
+            echo "Pipeline completed"
+        }
+        success {
+            echo "Pipeline executed successfully!"
+        }
+        failure {
+            echo "Pipeline failed. Check the logs for details."
         }
     }
 }
