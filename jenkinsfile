@@ -15,14 +15,14 @@ pipeline {
         stage('Set Up Python Virtual Environment') {
             steps {
                 sh '"/usr/bin/python3" -m venv venv'
-                sh '.\\venv\\Scripts\\python.exe -m pip install --upgrade pip'
-                sh '.\\venv\\Scripts\\pip install flask numpy pandas tensorflow'
+                sh './venv/Scripts/python.exe -m pip install --upgrade pip'
+                sh './venv/Scripts/pip install flask numpy pandas tensorflow'
             }
         }
 
         stage('Run Flask App') {
             steps {
-                sh '.\\venv\\Scripts\\python app.py'
+                sh './venv/Scripts/python app.py'
             }
         }
     }
