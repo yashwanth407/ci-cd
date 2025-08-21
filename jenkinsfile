@@ -3,7 +3,7 @@ pipeline {
 
     environment {
         VENV = "venv"
-        FLASK_PORT = "5001"
+        FLASK_PORT = "9001"
     }
 
     stages {
