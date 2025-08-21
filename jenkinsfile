@@ -3,6 +3,7 @@ pipeline {
 
     environment {
         VENV = "venv"
+        FLASK_PORT = "5001"
     }
 
     stages {
@@ -21,11 +22,10 @@ pipeline {
         stage('Create app.py if missing') {
             steps {
                 script {
-                    // Check if app.py exists, if not create a simple Flask app
                     def appExists = fileExists('app.py')
                     if (!appExists) {
                         echo "app.py not found — creating a minimal Flask app."
-                        writeFile file: 'app.py', text: '''
+                        writeFile file: 'app.py', text: """
 from flask import Flask
 app = Flask(__name__)
 
@@ -34,8 +34,8 @@ def hello():
     return "Hello, Jenkins!"
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=5000)
-'''
+    app.run(host="0.0.0.0", port=${env.FLASK_PORT})
+"""
                     } else {
                         echo "app.py found."
                     }
