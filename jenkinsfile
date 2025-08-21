@@ -1,0 +1,29 @@
+pipeline {
+    agent any
+
+    environment {
+        VENV = "venv"
+    }
+
+    stages {
+        stage('Clone GitHub Repo') {
+            steps {
+                git branch: 'main', credentialsId: 'github-https', url: 'https://github.com/yashwanth407/ci-cd.git'
+            }
+        }
+
+        stage('Set Up Python Virtual Environment') {
+            steps {
+                bat '"/usr/bin/python3" -m venv venv'
+                bat '.\\venv\\Scripts\\python.exe -m pip install --upgrade pip'
+                bat '.\\venv\\Scripts\\pip install flask numpy pandas tensorflow'
+            }
+        }
+
+        stage('Run Flask App') {
+            steps {
+                bat '.\\venv\\Scripts\\python app.py'
+            }
+        }
+    }
+}
