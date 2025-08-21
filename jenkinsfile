@@ -12,9 +12,16 @@ pipeline {
             }
         }
 
+        stage('Verify Files') {
+            steps {
+                sh 'ls -l'
+            }
+        }
+
         stage('Set Up Python Virtual Environment') {
             steps {
                 sh '''
+                    set -e
                     /usr/bin/python3 -m venv ${VENV}
                     ./${VENV}/bin/python -m pip install --upgrade pip
                     ./${VENV}/bin/pip install flask numpy pandas tensorflow
@@ -24,8 +31,12 @@ pipeline {
 
         stage('Run Flask App') {
             steps {
-                sh "./${VENV}/bin/python app.py"
+                sh '''
+                    set -e
+                    ./${VENV}/bin/python app.py
+                '''
             }
         }
     }
 }
+
