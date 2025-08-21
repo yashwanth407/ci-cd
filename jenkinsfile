@@ -25,8 +25,10 @@ pipeline {
                     def appExists = fileExists('app.py')
                     if (!appExists) {
                         echo "app.py not found — creating a minimal Flask app."
-                        writeFile file: 'app.py', text: """
+                        writeFile file: 'app.py', text: """\
 from flask import Flask
+import os
+
 app = Flask(__name__)
 
 @app.route("/")
@@ -34,7 +36,8 @@ def hello():
     return "Hello, Jenkins!"
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=${env.FLASK_PORT})
+    port = int(os.environ.get("FLASK_PORT", 9001))
+    app.run(host="0.0.0.0", port=port)
 """
                     } else {
                         echo "app.py found."
@@ -54,13 +57,30 @@ if __name__ == "__main__":
             }
         }
 
-        stage('Run Flask App') {
+        stage('Run Flask App in Background') {
             steps {
                 sh '''
                     set -e
-                    ./${VENV}/bin/python app.py
+                    nohup ./${VENV}/bin/python app.py > flask.log 2>&1 &
+                    echo $! > flask.pid
                 '''
             }
+        }
+    }
+
+    post {
+        always {
+            echo "Cleaning up Flask process if still running..."
+            sh '''
+                if [ -f flask.pid ]; then
+                    kill $(cat flask.pid) || true
+                    rm flask.pid
+                fi
+            '''
+        }
+        success {
+            echo "Archiving Flask log..."
+            archiveArtifacts artifacts: 'flask.log', allowEmptyArchive: true
         }
     }
 }
