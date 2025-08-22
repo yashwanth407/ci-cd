@@ -4,16 +4,21 @@ from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import Dense
 
 def train_model():
+    # Load data
     df = pd.read_csv('data.csv')
     X = df[['Feature1', 'Feature2']].values
     y = df[['Output']].values
 
+    # Define model
     model = Sequential()
     model.add(Dense(32, input_dim=2, activation='linear'))
     model.add(Dense(16, activation='relu'))
-    model.add(Dense(1))
+    model.add(Dense(1))  # Output layer
 
+    # Compile model
     model.compile(optimizer='adam', loss='mean_squared_error')
+
+    # Train model
     model.fit(X, y, epochs=1000, verbose=0)
 
     return model
