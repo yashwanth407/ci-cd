@@ -1,25 +1,26 @@
-from flask import Flask, request, render_template
-from model import train_model
-import numpy as np
+from flask import Flask
+from tensorflow.keras.models import Sequential
+from tensorflow.keras.layers import Dense, Input
+import pandas as pd
 
 app = Flask(__name__)
 
-# Train or load the model
-model = train_model()
+def build_model():
+    model = Sequential([
+        Input(shape=(2,)),            # Correct way to specify input shape
+        Dense(64, activation='relu'), # First hidden layer
+        Dense(16, activation='relu'), # Second hidden layer
+        Dense(1)                      # Output layer (linear activation by default)
+    ])
+    model.compile(optimizer='adam', loss='mean_squared_error')
+    return model
 
-@app.route('/', methods=['GET', 'POST'])
-def home():
-    result = None
-    if request.method == 'POST':
-        try:
-            num1 = float(request.form['num1'])
-            num2 = float(request.form['num2'])
-            input_data = np.array([[num1, num2]])
-            prediction = model.predict(input_data, verbose=0)
-            result = f"Predicted Sum: {prediction[0][0]:.2f}"
-        except Exception as e:
-            result = f"Invalid input. Please enter valid numbers. ({str(e)})"
-    return render_template('index.html', result=result)
+# Build model once, outside request handlers
+model = build_model()
+
+@app.route('/')
+def index():
+    return 'Model ready and warning-free!'
 
 if __name__ == '__main__':
-    app.run(debug=True)  
+    app.run(debug=True)
