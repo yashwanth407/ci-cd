@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Neural Network Adder</title>
+    <style>
+        /* General Body & Font Styling */
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            background-color: #f8f9fa; /* Lighter, more neutral background */
+            color: #111827; /* Darker, less-black text for better readability */
+        }
+
+        /* The main container, styled like a Shadcn Card */
+        .card {
+            background: #ffffff;
+            padding: 2rem;
+            border-radius: 0.75rem; /* Subtle rounding */
+            border: 1px solid #e5e7eb;
+            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05), 0 1px 2px -1px rgba(0, 0, 0, 0.05);
+            width: 100%;
+            max-width: 380px;
+            margin: 1rem;
+        }
+
+        .card-header {
+            margin-bottom: 1.5rem;
+            text-align: center;
+        }
+
+        .card-header h2 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin: 0;
+            color: #111827;
+        }
+
+        .card-header p {
+            margin: 0.25rem 0 0;
+            font-size: 0.875rem;
+            color: #6b7280;
+        }
+
+        .input-group {
+            margin-bottom: 1.25rem;
+        }
+
+        /* Shadcn-style Label */
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: #374151;
+        }
+
+        /* Shadcn-style Input */
+        input[type="text"] {
+            width: 100%;
+            padding: 0.65rem 0.75rem;
+            border: 1px solid #d1d5db;
+            border-radius: 0.5rem;
+            box-sizing: border-box;
+            font-size: 1rem;
+            transition: border-color 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        input[type="text"]:focus {
+            outline: none;
+            border-color: #2563eb;
+            box-shadow: 0 0 0 1px #2563eb;
+        }
+        
+        /* Shadcn-style Button */
+        input[type="submit"] {
+            width: 100%;
+            padding: 0.75rem;
+            border: none;
+            border-radius: 0.5rem;
+            background-color: #111827; /* Primary button color */
+            color: #f9fafb; /* Light text on dark button */
+            font-size: 0.875rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+        }
+
+        input[type="submit"]:hover {
+            background-color: #374151;
+        }
+
+        /* Result display area */
+        #result-box {
+            margin-top: 1.5rem;
+            padding: 0.75rem 1rem;
+            border-radius: 0.5rem;
+            background-color: #f8f9fa;
+            border: 1px solid #e5e7eb;
+            font-size: 1rem;
+            font-weight: 500;
+            color: #111827;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <div class="card-header">
+            <h2>Neural Network Adder</h2>
+            <p>Enter two numbers to predict their sum.</p>
+        </div>
+        
+        <form method="POST">
+            <div class="input-group">
+                <label for="num1">Number 1</label>
+                <input type="text" id="num1" name="num1" required>
+            </div>
+            <div class="input-group">
+                <label for="num2">Number 2</label>
+                <input type="text" id="num2" name="num2" required>
+            </div>
+            <input type="submit" value="Predict Sum">
+        </form>
+
+        {% if result %}
+            <div id="result-box">
+                {{ result }}
+            </div>
+        {% endif %}
+    </div>
+</body>
+</html>
