@@ -11,7 +11,7 @@ def train_model():
 
     # Define model
     model = Sequential()
-    model.add(Dense(32, input_dim=2, activation='linear'))
+    model.add(Dense(64, input_dim=2, activation='linear'))  # Updated to 64 units
     model.add(Dense(16, activation='relu'))
     model.add(Dense(1))  # Output layer
 
@@ -22,3 +22,4 @@ def train_model():
     model.fit(X, y, epochs=1000, verbose=0)
 
     return model
+
