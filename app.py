@@ -3,6 +3,8 @@ from model import train_model
 import numpy as np
 
 app = Flask(__name__)
+
+# Train or load the model
 model = train_model()
 
 @app.route('/', methods=['GET', 'POST'])
@@ -15,9 +17,9 @@ def home():
             input_data = np.array([[num1, num2]])
             prediction = model.predict(input_data, verbose=0)
             result = f"Predicted Sum: {prediction[0][0]:.2f}"
-        except:
-            result = "Invalid input. Please enter valid numbers."
+        except Exception as e:
+            result = f"Invalid input. Please enter valid numbers. ({str(e)})"
     return render_template('index.html', result=result)
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=True)  
