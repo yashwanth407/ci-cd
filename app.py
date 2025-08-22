@@ -1,34 +1,23 @@
-from flask import Flask
-import pandas as pd
-from tensorflow.keras.models import Sequential
-from tensorflow.keras.layers import Dense, Input
+from flask import Flask, request, render_template
+from model import train_model
+import numpy as np
 
 app = Flask(__name__)
+model = train_model()
 
-def build_model():
-    model = Sequential([
-        Input(shape=(2,)),          # Correct input layer, no input_dim in Dense
-        Dense(64, activation='relu'),
-        Dense(16, activation='relu'),
-        Dense(1)
-    ])
-    model.compile(optimizer='adam', loss='mean_squared_error')
-    return model
-
-model = build_model()
-
-def train_model():
-    # Make sure 'data.csv' exists in the same folder with columns: Feature1, Feature2, Output
-    df = pd.read_csv('data.csv')
-    X = df[['Feature1', 'Feature2']].values
-    y = df[['Output']].values
-
-    model.fit(X, y, epochs=1000, verbose=0)
-    return model
-
-@app.route('/')
-def index():
-    return 'Model is built and ready!'
+@app.route('/', methods=['GET', 'POST'])
+def home():
+    result = None
+    if request.method == 'POST':
+        try:
+            num1 = float(request.form['num1'])
+            num2 = float(request.form['num2'])
+            input_data = np.array([[num1, num2]])
+            prediction = model.predict(input_data, verbose=0)
+            result = f"Predicted Sum: {prediction[0][0]:.2f}"
+        except:
+            result = "Invalid input. Please enter valid numbers."
+    return render_template('index.html', result=result)
 
 if __name__ == '__main__':
     app.run(debug=True)
