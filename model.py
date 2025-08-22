@@ -6,15 +6,14 @@ def train_model():
     X = df[['Feature1', 'Feature2']].values
     y = df[['Output']].values
 
-    model = Sequential()
-    model.add(Input(shape=(2,)))         # Define input shape explicitly
-    model.add(Dense(64, activation='linear'))
-    model.add(Dense(16, activation='relu'))
-    model.add(Dense(1))
+    model = Sequential([
+        Input(shape=(2,)),           # Input layer with shape only here
+        Dense(64, activation='linear'),
+        Dense(16, activation='relu'),
+        Dense(1)
+    ])
 
     model.compile(optimizer='adam', loss='mean_squared_error')
     model.fit(X, y, epochs=1000, verbose=0)
 
     return model
-
-
