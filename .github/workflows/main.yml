@@ -11,6 +11,9 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v4
 
+    - name: List files in current directory
+      run: ls -la
+
     - name: Set up Python
       uses: actions/setup-python@v5
       with:
@@ -41,4 +44,3 @@ jobs:
 
     - name: Keep alive
       run: sleep 10m
-
