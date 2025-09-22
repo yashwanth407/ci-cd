@@ -1,7 +1,8 @@
 import pandas as pd
 import numpy as np
+import tensorflow as tf
 from tensorflow.keras.models import Sequential
-from tensorflow.keras.layers import Dense, Input
+from tensorflow.keras.layers import Dense
 
 def train_model():
     # Load data
@@ -11,8 +12,8 @@ def train_model():
 
     # Define model using Input layer to avoid warnings
     model = Sequential([
-        Input(shape=(2,)),   # Correct way
-        Dense(64, activation='relu'),
+        tf.keras.Input(shape=(2,)),  # Recommended way to specify input shape
+        Dense(32, activation='linear'),
         Dense(16, activation='relu'),
         Dense(1)
     ])
@@ -25,3 +26,7 @@ def train_model():
 
     return model
 
+if __name__ == '__main__':
+    model = train_model()
+    model.save('trained_model.h5')
+    print("Model trained and saved as trained_model.h5")
