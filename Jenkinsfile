@@ -19,9 +19,10 @@ pipeline {
         sh '''
           source venv/bin/activate
           nohup python app.py > app.log 2>&1 &
-          echo "Flask app is running at http://localhost:5000"
+          echo "Flask app is running at http://<your-jenkins-ip>:5000"
         '''
       }
     }
   }
 }
+
