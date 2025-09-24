@@ -22,10 +22,9 @@ pipeline {
           IP_ADDRESS=$(curl -s ifconfig.me)
           # Now, use the variable to print the dynamic URL
           echo "Flask app is running at http://${IP_ADDRESS}:5000"
-          # Start the Flask app, binding it only to the local machine (127.0.0.1)
-          nohup python app.py run --host=127.0.0.1 > app.log 2>&1 &
+          # Start the Flask app, binding it to all interfaces (0.0.0.0)
+          nohup python app.py run --host=0.0.0.0 > app.log 2>&1 &
         '''
       }
     }
   }
-}
