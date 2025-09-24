@@ -18,10 +18,18 @@ pipeline {
       steps {
         sh '''
           source venv/bin/activate
+          
+          # Use curl to get the external IP address of the Jenkins server
+          # This command queries a public service and stores the result in a variable
+          IP_ADDRESS=$(curl -s ifconfig.me)
+          
+          # Now, use the variable to print the dynamic URL
+          echo "Flask app is running at http://${IP_ADDRESS}:5000"
+          
+          # Start the Flask app in the background, redirecting output to a log file
+          # This allows the Jenkins pipeline to finish successfully
           nohup python app.py > app.log 2>&1 &
-          echo "Flask app is running at http://<your-jenkins-ip>:5000"
         '''
       }
     }
   }
-}
