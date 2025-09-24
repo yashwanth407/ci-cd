@@ -2,11 +2,11 @@ pipeline {
     agent any
     environment {
         VENV = "venv"
+        FLASK_PID = ""
     }
     stages {
         stage('Clone Application Repo') {
             steps {
-                // Correct way to clone the repo
                 git(
                     branch: 'main', 
                     credentialsId: 'github-https', 
@@ -14,22 +14,44 @@ pipeline {
                 )
             }
         }
+        
         stage('Set Up Python Virtual Environment') {
             steps {
-                // Use double quotes for string interpolation
                 sh "python3 -m venv ${VENV}"
                 sh "./${VENV}/bin/pip install --upgrade pip"
                 sh "./${VENV}/bin/pip install pandas numpy tensorflow flask"
             }
         }
+        
         stage('Run and Test Flask App') {
             steps {
                 script {
-                    sh 'nohup ./${VENV}/bin/python app.py > server.log 2>&1 &'
-                    sh 'sleep 5'
-                    sh 'curl --fail http://localhost:5000'
-                    // Correct way to kill the process to avoid Groovy Sandbox errors
-                    sh 'kill $(lsof -t -i:5000)'
+                    // Start Flask app and capture PID
+                    sh """
+                        ./${VENV}/bin/python app.py > server.log 2>&1 &
+                        echo \$! > flask.pid
+                    """
+                    
+                    // Wait for app to start
+                    sh 'sleep 10'
+                    
+                    // Test the application
+                    sh 'curl --fail http://localhost:5000 || (cat server.log && exit 1)'
+                }
+            }
+            post {
+                always {
+                    script {
+                        // Gracefully stop the Flask app
+                        sh '''
+                            if [ -f flask.pid ]; then
+                                kill $(cat flask.pid) 2>/dev/null || true
+                                rm -f flask.pid
+                            fi
+                            # Force kill any process on port 5000 if needed
+                            pkill -f "python app.py" 2>/dev/null || true
+                        '''
+                    }
                 }
             }
         }
