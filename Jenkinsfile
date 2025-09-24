@@ -5,7 +5,7 @@
             steps {
                 // Use 'sh' instead of 'bat' for Linux/macOS
                 sh '''
-                   python3 -m venv venv
+                   python -m venv venv
                    source venv/bin/activate
                    pip install -r requirements.txt
                 '''
