@@ -15,7 +15,7 @@ def home():
             input_data = np.array([[num1, num2]])
             prediction = model.predict(input_data, verbose=0)
             result = f"Predicted Sum: {prediction[0][0]:.2f}"
-        except:
+        except Exception as e:
             result = "Invalid input. Please enter valid numbers."
     return render_template('index.html', result=result)
 
