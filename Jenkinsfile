@@ -1,28 +1,22 @@
-  pipeline {
+ pipeline {
     agent any
-
-    environment {
-        VENV = "venv"
-    }
-
     stages {
-        stage('Clone GitHub Repo') {
-            steps {
-                git branch: 'main', credentialsId: 'github-https', url: 'https://github.com/yashwanth407/ci-cd.git'
-            }
-        }
-
         stage('Set Up Python Virtual Environment') {
             steps {
-                bat '"C:\\Users\\your-username\\AppData\\Local\\Programs\\Python\\Python310\\python.exe" -m venv %VENV%'
-                bat '.\\%VENV%\\Scripts\\python.exe -m pip install --upgrade pip'
-                bat '.\\%VENV%\\Scripts\\pip install -r requirements.txt'
+                // Use 'sh' instead of 'bat' for Linux/macOS
+                sh '''
+                   python3 -m venv venv
+                   source venv/bin/activate
+                   pip install -r requirements.txt
+                '''
             }
         }
-
         stage('Run Flask App') {
             steps {
-                bat '.\\%VENV%\\Scripts\\python.exe app.py'
+                sh '''
+                   source venv/bin/activate
+                   python app.py
+                '''
             }
         }
     }
